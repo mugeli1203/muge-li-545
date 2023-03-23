@@ -170,15 +170,7 @@ sim_prices = 151.03 * np.exp(sim_returns.sum(axis=0))
 # print(sim_prices)
 
 current_date = datetime(2023, 3, 3) + timedelta(days=10)
-ivs = []
-for i in range(len(portfolios.index)):
-  option_type = portfolios["OptionType"][i]
-  X = portfolios["Strike"][i]
-  T = time_to_maturity(current_date, portfolios["ExpirationDate"][i])
-  price = portfolios["CurrentPrice"][i]
-  sigma = find_iv(option_type, 151.03, X, T, r, b, price, 0.001)
-  ivs.append(sigma)
-portfolios['IV'] = ivs
+
 
 portfolio_values_sim = cal_portfolio_value(portfolios, 100, current_date)
 for i in sim_prices:
@@ -206,6 +198,6 @@ def cal_es(sim_data, alpha = 0.05):
 # Calculate the Mean, VaR and ES, and print the results
 result = pd.DataFrame(index=sim_value_changes.index)
 result['Mean'] = sim_value_changes.mean(axis=1)
-result['VaR'] = sim_value_changes.apply(lambda x:cal_var(x, 0), axis=1)
+result['VaR'] = sim_value_changes.apply(lambda x:cal_var(x), axis=1)
 result['ES'] = sim_value_changes.apply(lambda x:cal_es(x), axis=1)
 print(result)
